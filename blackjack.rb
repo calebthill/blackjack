@@ -76,63 +76,142 @@ end
 
 
 class Hand
-  attr_accessor :hand
+  attr_accessor :hand, :players_hand
   def initialize
     @deck = Deck.new
   end
 
 
   def players_initial_hand
-    #we will refactor!!!!!!
+    card1 = @deck.deal
+    card2 = @deck.deal
     @players_hand = []
-    @players_hand << @deck.deal
-    @players_hand << @deck.deal
-    card1 = @players_hand[0]
-    card2 = @players_hand[1]
-    firstcard1 = card1.show_card
-    firstcard2 = card2.show_card
-    puts "player was delt: #{firstcard1[0]}#{firstcard1[1]}"
-    puts "player was delt: #{firstcard2[0]}#{firstcard2[1]}"
-    @score = card1.value? + card2.value?
-    puts "Players score: #{@score}"
+    @players_hand << card1
+    @players_hand << card2
+    puts "Player was dealt #{card1.show_card[0]}#{card1.show_card[1]}"
+    puts "Player was dealt #{card2.show_card[0]}#{card2.show_card[1]}"
+
   end
 
   def hit
-    @players_hand << @deck.deal
-    @players_hand
+    card = @deck.deal
+    @players_hand << card
+    puts "Player was dealt #{card.show_card[0]}#{card.show_card[1]}"
+    card
+  end
+
+  def score_hand_p
+    score = 0
+
     @players_hand.each do |card|
-      @score += card.show_card[0].to_i
+      score += card.value?
     end
-    @score
-    @players_hand
+    # if @players_hand
+     score
+    # end
+
   end
 
-  def hit_result
-    @current_card = @players_hand[-1].show_card
-    puts "Player was dealt: #{@current_card[0]}#{@current_card[1]}"
-    puts "player score: #{@score}"
+  def score_hand_d
+    score = 0
+    @dealers_hand.each do |card|
+      score += card.value?
+    end
+    score
   end
 
-
-
+#MUST KEEP HITTING UNTIL 17
   def dealers_hand
-    dealers_hand = []
-    dealers_hand << @deck.deal
-    dealers_hand << @deck.deal
+    @dealers_hand = []
+    @dealers_hand << @deck.deal
+    @dealers_hand << @deck.deal
+    while score_hand_d < 17
+      @dealers_hand << @deck.deal
+    end
   end
-#represent the player's and dealer's hand. This class will need to
-#determine the best score based on the cards that have been dealt.
+
+  def compare_score
+    if score_hand_d == 21
+      puts "Dealer has #{score_hand_d}"
+      puts "Dealer wins!"
+    elsif score_hand_d > 21
+      #dealer ace method goes here
+      puts "Dealer has #{score_hand_d}"
+      puts "Dealer busts.  You win!"
+    elsif score_hand_p > score_hand_d
+      puts "You win!"
+    else
+      puts "Dealer wins! #{score_hand_d}"
+    end
+  end
+
   def show_players_hand
     @players_hand
   end
 
+  def show_players_score
+    @score.to_a
+  end
+
+
+  def player_ace_value
+    @score = score_hand_p
+    b = @players_hand
+
+    counter = 0
+    a = []
+    b.each do |card|
+      a << card.show_card
+    end
+    a.each do |card|
+      if card[0] == "A"
+        counter += 1
+      end
+    end
+
+    while counter >= 1 && @score > 21
+      @score = @score - 10
+      counter -= 1
+    end
+    @score
+  end
 end
 
+
+
+
 hand = Hand.new
+
+puts "Welcome to Blackjack!"
+puts
 hand.players_initial_hand
-hand.hit_result
 
 
 
+while true
+  if hand.player_ace_value < 21
+    puts "Player score: #{hand.player_ace_value}"
+    print "Hit or stand (h/s):"
+    user_input = gets.chomp
+    if user_input == "h"
+        hand.hit
+
+        # puts "Player score: #{hand.show_players_score}"
+    else
+        puts "Player score: #{hand.player_ace_value}"
+        hand.dealers_hand
+        hand.compare_score
+        break
+    end
+  elsif hand.player_ace_value == 21
+    puts "Player score: #{hand.player_ace_value}"
+    puts "Blackjack! You win!"
+    break
+  elsif hand.player_ace_value > 21
+    puts "Player score: #{hand.player_ace_value}"
+    puts "Bust! You lose."
+    break
+  end
+end
 
 
