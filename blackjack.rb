@@ -6,13 +6,10 @@ SUIT = ['♠', '♥', '♣', '♦']
 
 class Card
   attr_reader :card
-#represent an individual playing card. This class should
-#contain the suit and the value and provide methods for
-#determining what type of card it is (e.g. face card or ace).
+
   def initialize(rank, suit)
     @card = [rank, suit]
   end
-
 
   def face_card?
     if @card[0] == "J" || @card[0] == "Q" || @card[0] == "K"
@@ -47,8 +44,6 @@ class Card
 end
 
 
-
-
 class Deck
 #creates a deck of shuffled cards
   def initialize
@@ -59,7 +54,6 @@ class Deck
         @deck << card
       end
     end
-    #@deck = @deck.shuffle
     @deck.shuffle!
   end
 
@@ -71,8 +65,6 @@ class Deck
     @deck.count
   end
 end
-
-
 
 
 class Hand
@@ -90,7 +82,6 @@ class Hand
     @players_hand << card2
     puts "Player was dealt #{card1.show_card[0]}#{card1.show_card[1]}"
     puts "Player was dealt #{card2.show_card[0]}#{card2.show_card[1]}"
-
   end
 
   def hit
@@ -106,10 +97,7 @@ class Hand
     @players_hand.each do |card|
       score += card.value?
     end
-    # if @players_hand
      score
-    # end
-
   end
 
   def score_hand_d
@@ -120,7 +108,7 @@ class Hand
     score
   end
 
-#MUST KEEP HITTING UNTIL 17
+  #MUST KEEP HITTING UNTIL 17
   def dealers_hand
     @dealers_hand = []
     @dealers_hand << @deck.deal
@@ -153,7 +141,6 @@ class Hand
     @score.to_a
   end
 
-
   def player_ace_value
     @score = score_hand_p
     b = @players_hand
@@ -163,6 +150,7 @@ class Hand
     b.each do |card|
       a << card.show_card
     end
+
     a.each do |card|
       if card[0] == "A"
         counter += 1
@@ -178,15 +166,11 @@ class Hand
 end
 
 
-
-
 hand = Hand.new
 
 puts "Welcome to Blackjack!"
 puts
 hand.players_initial_hand
-
-
 
 while true
   if hand.player_ace_value < 21
@@ -195,13 +179,11 @@ while true
     user_input = gets.chomp
     if user_input == "h"
         hand.hit
-
-        # puts "Player score: #{hand.show_players_score}"
     else
-        puts "Player score: #{hand.player_ace_value}"
-        hand.dealers_hand
-        hand.compare_score
-        break
+      puts "Player score: #{hand.player_ace_value}"
+      hand.dealers_hand
+      hand.compare_score
+      break
     end
   elsif hand.player_ace_value == 21
     puts "Player score: #{hand.player_ace_value}"
@@ -213,5 +195,3 @@ while true
     break
   end
 end
-
-
